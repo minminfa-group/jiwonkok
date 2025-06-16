@@ -1,0 +1,34 @@
+{% extends '../base.html' %}
+
+{% block title %}앱 설정 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">앱 설정</h1>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">기본 설정</h5>
+                <form>
+                    <div class="mb-3">
+                        <label for="appName" class="form-label">앱 이름</label>
+                        <input type="text" class="form-control" id="appName" value="JiwonKoK">
+                    </div>
+                    <div class="mb-3">
+                        <label for="appDescription" class="form-label">앱 설명</label>
+                        <textarea class="form-control" id="appDescription" rows="3">JiwonKoK Admin Dashboard</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appVersion" class="form-label">앱 버전</label>
+                        <input type="text" class="form-control" id="appVersion" value="1.0.0">
+                    </div>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

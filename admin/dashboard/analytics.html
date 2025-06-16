@@ -1,0 +1,100 @@
+{% extends '../base.html' %}
+
+{% block title %}분석 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">분석</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">사용자 통계</h5>
+                <canvas id="userChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">수익 통계</h5>
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">주요 지표</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>지표</th>
+                                <th>값</th>
+                                <th>변화</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>활성 사용자</td>
+                                <td>1,234</td>
+                                <td class="text-success">+12%</td>
+                            </tr>
+                            <tr>
+                                <td>평균 체류 시간</td>
+                                <td>15분</td>
+                                <td class="text-success">+5%</td>
+                            </tr>
+                            <tr>
+                                <td>전환율</td>
+                                <td>3.2%</td>
+                                <td class="text-danger">-1%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 사용자 통계 차트
+    const userCtx = document.getElementById('userChart').getContext('2d');
+    new Chart(userCtx, {
+        type: 'line',
+        data: {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+            datasets: [{
+                label: '활성 사용자',
+                data: [800, 900, 1000, 1100, 1200, 1234],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        }
+    });
+
+    // 수익 통계 차트
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'bar',
+        data: {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+            datasets: [{
+                label: '월간 수익',
+                data: [500000, 600000, 700000, 800000, 900000, 1000000],
+                backgroundColor: 'rgb(54, 162, 235)'
+            }]
+        }
+    });
+</script>
+{% endblock %} 

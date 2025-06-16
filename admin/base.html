@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JiwonKoK Admin{% endblock %}</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/">JiwonKoK Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">Dashboard</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_logout' %}">
+                            <i class="bi bi-box-arrow-right"></i> 로그아웃
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">
+                                <i class="bi bi-speedometer2"></i> 대시보드
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/admin/advertisement/' %}active{% endif %}" href="{% url 'admin_advertisement' %}">
+                                <i class="bi bi-megaphone"></i> 마케팅 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_content' %}">
+                                <i class="bi bi-file-earmark-text"></i> 콘텐츠 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/admin/users/' %}active{% endif %}" href="{% url 'admin_users' %}">
+                                <i class="bi bi-people"></i> 회원관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_revenue' %}">
+                                <i class="bi bi-cash-stack"></i> 수익 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_settings' %}">
+                                <i class="bi bi-gear"></i> 앱 설정
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_analytics' %}">
+                                <i class="bi bi-graph-up"></i> 분석
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_system' %}">
+                                <i class="bi bi-shield-lock"></i> 시스템 관리
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {% bootstrap_messages %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JiwonKoK</title>
+    {% load static %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        :root {
+            --main-teal: #008080;
+            --main-teal-dark: #006666;
+            --main-teal-light: #19a7a7;
+            --main-bg: #f3fbfb;
+        }
+        body {
+            background-color: var(--main-bg);
+        }
+        .navbar {
+            background-color: var(--main-teal);
+        }
+        .navbar-brand, .nav-link, .navbar-nav .nav-link.active {
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .notice-bar {
+            background: var(--main-teal-light);
+            color: #fff;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 8px 0;
+            width: 180px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        .main-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--main-teal);
+            margin-top: 18px;
+            margin-bottom: 24px;
+        }
+        .total-announcement-count {
+            font-size: 1.3em;
+            color: #ff8800;
+            font-weight: 700;
+        }
+        .search-bar {
+            max-width: 720px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-bar input {
+            flex: 1;
+            border-radius: 30px 0 0 30px;
+            border: 2px solid var(--main-teal);
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+        }
+        .search-bar button {
+            border-radius: 0 30px 30px 0;
+            background: var(--main-teal);
+            color: #fff;
+            border: none;
+            padding: 0 24px;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        .search-bar button:hover {
+            background: var(--main-teal-dark);
+        }
+        .filter-container {
+            background: #eaf7f7;
+            border: none;
+            border-radius: 24px;
+            padding: 14px 40px 10px 40px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            max-width: 1250px;
+            width: 100%;
+        }
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem 1.1rem;
+            width: 100%;
+            justify-items: stretch;
+        }
+        .filter-group .filter-btn {
+            width: 100%;
+            min-width: 140px;
+            white-space: nowrap;
+        }
+        .filter-btn {
+            border: 2px solid var(--main-teal);
+            background: #e0f2f2;
+            color: var(--main-teal);
+            font-weight: 500;
+            border-radius: 20px;
+            padding: 0.4rem 1.2rem;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s;
+            min-width: 110px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--main-teal);
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+        }
+        .region-filter-card {
+            background: #eaf7f7;
+            border-radius: 24px;
+            padding: 14px 24px 10px 24px;
+            margin: 0 auto 16px auto;
+            display: inline-flex;
+            justify-content: flex-start;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .region-filter-group {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.5rem;
+            justify-content: flex-start;
+            flex: 1;
+        }
+        .notice-list {
+            max-width: 960px;
+            margin: 32px auto 0 auto;
+        }
+        .notice-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 24px 24px 16px 24px;
+            margin-bottom: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            word-break: break-word;
+            transition: background 0.2s;
+            position: relative;
+            z-index: 20;
+        }
+        .even-card { background: #e0f2f2; }
+        .odd-card { background: #fff; }
+        .notice-info {
+            flex: 1;
+        }
+        .notice-title {
+            font-size: 1.43rem;
+            font-weight: 700;
+            color: #006666;
+            margin-bottom: 6px;
+            display: block;
+            text-align: left;
+            word-break: break-word;
+            white-space: normal;
+        }
+        .notice-subtitle {
+            font-size: 0.86rem;
+            color: #008080;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .badge-new {
+            background: var(--main-teal);
+            color: #fff;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            padding: 2px 8px;
+            margin-right: 6px;
+        }
+        .notice-meta {
+            color: var(--main-teal);
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .notice-desc {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .notice-date {
+            color: #888;
+            font-size: 0.92rem;
+        }
+        .notice-action {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .btn-apply {
+            background: var(--main-teal);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        .btn-apply:hover {
+            background: var(--main-teal-dark);
+        }
+        .search-icon {
+            font-size: 1.2rem;
+        }
+        @media (max-width: 1200px) {
+            .filter-container { max-width: 100%; padding-left: 8px; padding-right: 8px; }
+        }
+        @media (max-width: 1000px) {
+            .filter-container { max-width: 100%; }
+        }
+        @media (max-width: 900px) {
+            .filter-group { flex-wrap: wrap; }
+        }
+        @media (max-width: 600px) {
+            .notice-card { flex-direction: column; gap: 12px; }
+            .notice-action { align-items: flex-start; }
+            .filter-container { padding: 10px 4px; }
+            .filter-btn { min-width: 70px; font-size: 0.95rem; }
+        }
+        .filter-group.category-group {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 1rem 1.1rem;
+            width: 100%;
+            justify-items: stretch;
+            margin-top: 1rem;
+        }
+        .filter-group.category-group .filter-btn {
+            width: 100%;
+            min-width: 120px;
+            white-space: nowrap;
+            border: 2px solid #006666;
+            color: #006666;
+            background: #e0f2f2;
+        }
+        .filter-group.category-group .filter-btn.active {
+            background: #006666;
+            color: #fff;
+            border: 2px solid #006666;
+        }
+        .ad-carousel-container {
+            max-width: 1250px;
+            width: 100%;
+            margin: 0 auto 0 auto;
+        }
+        .ad-carousel .carousel-inner {
+            border-radius: 0;
+            overflow: hidden;
+        }
+        .ad-carousel .carousel-item img {
+            width: 100%;
+            aspect-ratio: 5 / 1;
+            height: auto;
+            object-fit: cover;
+        }
+        .notice-detail {
+            background: #fff;
+            border-radius: 0 0 18px 18px;
+            margin: 0 30px 18px 30px;
+            box-shadow: 0 8px 32px rgba(0,128,128,0.18), 0 1.5px 8px rgba(0,128,128,0.10);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            padding: 0 32px;
+            transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s cubic-bezier(0.4,0,0.2,1);
+            pointer-events: none;
+            text-align: left;
+            font-size: 1.2em;
+            font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+            color: #004d4d;
+        }
+        .notice-detail.open {
+            max-height: 1200px;
+            opacity: 1;
+            padding: 32px 32px 24px 32px;
+            pointer-events: auto;
+        }
+        .notice-detail > div {
+            margin-bottom: 1.1em;
+        }
+        .notice-detail > div:last-child {
+            margin-bottom: 0;
+        }
+        /* 상세페이지 상단 box-shadow와 border-radius 제거 효과 */
+        .notice-detail::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 18px;
+            background: #fff;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            box-shadow: none;
+            z-index: 11;
+        }
+        .login-required-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 0 36px 0;
+            color: #004d4d;
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+        .login-required-message img {
+            width: 112px !important;
+            height: 112px !important;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            /* box-shadow: 0 2px 12px rgba(0,0,0,0.08); */
+            display: block;
+            object-fit: contain;
+        }
+        .login-required-message .btn {
+            margin-top: 18px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .login-btn-custom {
+            font-size: 0.88em !important; /* 0.8 * 1.1em (기존 btn-apply의 font-size) */
+            font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif !important;
+        }
+        .login-required-message .login-desc {
+            font-size: 0.8em;
+            margin-bottom: 18px;
+        }
+        .notice-detail-content > div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 네비게이션 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/static/asset/logo.png" alt="로고" style="height: 64px; width: auto; vertical-align: middle;">
+            </a>
+            <div class="d-flex ms-auto">
+                <a href="#" class="btn btn-outline-light me-2" style="font-weight:600;" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</a>
+                <a href="#" class="btn btn-light" style="font-weight:600; color:var(--main-teal);" data-bs-toggle="modal" data-bs-target="#signupModal">회원가입</a>
+                <button id="logoutBtn" class="btn btn-outline-light ms-2" style="font-weight:600; display:none;">로그아웃</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 로그인 모달 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; background: #f3fbfb; border: none;">
+          <div class="modal-body p-4">
+            <form>
+              <input type="email" class="form-control mb-3" placeholder="이메일" style="border-radius: 16px; font-size:1.1em; height:48px;">
+              <input type="password" class="form-control mb-4" placeholder="비밀번호" style="border-radius: 16px; font-size:1.1em; height:48px;">
+              <button type="submit" class="btn w-100 mb-3" style="background:#e0f2f2; color:var(--main-teal); font-weight:600; border-radius:24px; font-size:1.1em; height:48px;">로그인</button>
+              <div class="text-center mb-3" style="color:#888; font-size:1em;">or</div>
+              <button type="button" class="btn w-100 d-flex align-items-center justify-content-center btn-google" style="border:2px solid var(--main-teal); border-radius:24px; background:#fff; color:var(--main-teal); font-weight:600; font-size:1.1em; height:48px;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="구글" style="width:24px; height:24px; margin-right:10px;">구글로 로그인
+              </button>
+              <div class="text-center mt-4">
+                <a href="#" style="color:var(--main-teal); font-weight:600; text-decoration:underline; font-size:1em;" data-bs-toggle="modal" data-bs-target="#signupModal" onclick="bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();">회원가입하기</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; background: #f3fbfb; border: none;">
+          <div class="modal-body p-4">
+            <form id="signupForm">
+              <input type="email" class="form-control mb-3" placeholder="이메일" required style="border-radius: 16px; font-size:1.1em; height:48px;">
+              <input type="password" class="form-control mb-3" placeholder="비밀번호" required minlength="6" style="border-radius: 16px; font-size:1.1em; height:48px;">
+              <input type="password" class="form-control mb-4" placeholder="비밀번호 확인" required minlength="6" style="border-radius: 16px; font-size:1.1em; height:48px;">
+              <button type="submit" class="btn w-100 mb-3" style="background:#e0f2f2; color:var(--main-teal); font-weight:600; border-radius:24px; font-size:1.1em; height:48px;">회원가입</button>
+              <div class="text-center mb-3" style="color:#888; font-size:1em;">or</div>
+              <button type="button" class="btn w-100 d-flex align-items-center justify-content-center btn-google" style="border:2px solid var(--main-teal); border-radius:24px; background:#fff; color:var(--main-teal); font-weight:600; font-size:1.1em; height:48px;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="구글" style="width:24px; height:24px; margin-right:10px;">구글로 회원가입
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 바디 -->
+    <div class="container">
+        <div class="ad-carousel-container">
+            <div id="adCarousel" class="carousel slide ad-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for img in ad_images %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{% static img %}" alt="Ad {{ forloop.counter }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if ad_images|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#adCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        <div style="width: 100%; display: flex; justify-content: center; margin: 32px 0 18px 0;">
+            <hr style="width: 200px; border: none; border-top: 3px solid #008080; border-radius: 2px; margin: 0;">
+        </div>
+        <div class="main-title">오늘의 모집공고 <span class="total-announcement-count">총 {{ announcements|length }}건</span></div>
+        <form class="search-bar" method="get">
+            <input type="text" placeholder="공고 제목, 기관명, 분야 등 입력" name="q">
+            <button type="submit"><span class="search-icon">🔍</span></button>
+        </form>
+        <div class="filter-container">
+            <div class="filter-group">
+                <button type="button" class="filter-btn active">전국</button>
+                <button type="button" class="filter-btn">서울/경기/인천</button>
+                <button type="button" class="filter-btn">대전/충청/세종</button>
+                <button type="button" class="filter-btn">부산/울산/경남</button>
+                <button type="button" class="filter-btn">경북/대구</button>
+                <button type="button" class="filter-btn">광주/전라</button>
+                <button type="button" class="filter-btn">강원/제주</button>
+            </div>
+            <div class="filter-group category-group">
+                <button type="button" class="filter-btn active">전체분야</button>
+                <button type="button" class="filter-btn">토목</button>
+                <button type="button" class="filter-btn">건축</button>
+                <button type="button" class="filter-btn">조경/전기</button>
+                <button type="button" class="filter-btn">환경</button>
+                <button type="button" class="filter-btn">교통</button>
+                <button type="button" class="filter-btn">상하수도</button>
+                <button type="button" class="filter-btn">도시계획</button>
+                <button type="button" class="filter-btn">정보통신</button>
+                <button type="button" class="filter-btn">디자인</button>
+                <button type="button" class="filter-btn">문화/예술</button>
+                <button type="button" class="filter-btn">홍보/마케팅</button>
+                <button type="button" class="filter-btn">경영/창업</button>
+                <button type="button" class="filter-btn">행사/공연기획</button>
+                <button type="button" class="filter-btn">관광</button>
+                <button type="button" class="filter-btn">기타</button>
+            </div>
+        </div>
+        <div class="notice-list">
+            {% if announcements %}
+                {% for announcement in announcements %}
+                <div class="notice-card {% if forloop.counter|divisibleby:2 %}even-card{% else %}odd-card{% endif %}" onclick="toggleDetail('{{ forloop.counter0 }}')" style="cursor:pointer;">
+                    <div class="notice-info">
+                        <div class="notice-title" style="text-align:left; word-break:keep-all; white-space:pre-line;">{{ announcement.제목 }}</div>
+                        <div class="notice-subtitle">모집기간 : {{ announcement.모집기간 }} | {{ announcement.공고기관 }} | {{ announcement.분야 }}</div>
+                    </div>
+                </div>
+                <div class="notice-detail" id="detail-{{ forloop.counter0 }}">
+                    <div class="login-required-message" style="display:none;">
+                        <img src="/static/asset/profile-icon.png" alt="로그인 필요 안내 이미지">
+                        <div class="login-desc">상세 내용을 보려면 로그인이 필요합니다.</div>
+                        <button class="btn btn-apply login-btn-custom" onclick="openLoginModal()">로그인/회원가입 하러가기</button>
+                    </div>
+                    <div class="notice-detail-content">
+                        {% if announcement.공고일 %}<div><b>공고일 :</b> {{ announcement.공고일 }}</div>{% endif %}
+                        {% if announcement.공고기관 %}<div><b>공고기관 :</b> {{ announcement.공고기관 }}</div>{% endif %}
+                        {% if announcement.모집분야 %}<div><b>모집분야 :</b> {{ announcement.모집분야 }}</div>{% endif %}
+                        {% if announcement.모집인원 %}<div><b>모집인원 :</b> {{ announcement.모집인원 }}</div>{% endif %}
+                        {% if announcement.평가일시 %}<div><b>평가 일시 :</b> {{ announcement.평가일시 }}</div>{% endif %}
+                        {% if announcement.평가장소 %}<div><b>평가장소 :</b> {{ announcement.평가장소 }}</div>{% endif %}
+                        {% if announcement.접수기간 %}<div><b>접수기간 :</b> {{ announcement.접수기간 }}</div>{% endif %}
+                        {% if announcement.접수방법 %}<div><b>접수방법 :</b> {{ announcement.접수방법 }}</div>{% endif %}
+                        {% if announcement.접수처 %}<div><b>접수처 :</b> {{ announcement.접수처 }}</div>{% endif %}
+                        {% if announcement.제출서류 %}<div><b>제출서류 :</b> {{ announcement.제출서류 }}</div>{% endif %}
+                        {% if announcement.자격요건 %}<div><b>자격요건 :</b> {{ announcement.자격요건 }}</div>{% endif %}
+                        {% if announcement.제외대상 %}<div><b>제외대상 :</b> {{ announcement.제외대상 }}</div>{% endif %}
+                        <div style="text-align:center; margin-top: 2.2em; margin-bottom: 2em;">
+                            <a href="{{ announcement.file_link|default:'#' }}" target="_blank" class="btn btn-apply" style="min-width:140px; font-size:1.1em;">바로가기</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="notice-card">
+                    <div class="notice-info">
+                        <div class="notice-title">데이터를 불러오는 중입니다...</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyAv_rzTfkn_Aymck6faCy7rEsDh8uh0vfo",
+            authDomain: "jiwonq-68dbb.firebaseapp.com",
+            databaseURL: "https://jiwonq-68dbb-default-rtdb.firebaseio.com",
+            projectId: "jiwonq-68dbb",
+            storageBucket: "jiwonq-68dbb.firebasestorage.app",
+            messagingSenderId: "148645860928",
+            appId: "1:148645860928:web:4cb35ee1f4db4ff176b1a5"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+
+        // 로그인 상태 관리
+        firebase.auth().onAuthStateChanged(function(user) {
+            console.log('onAuthStateChanged:', user);
+            const loginBtn = document.querySelector('a[data-bs-target="#loginModal"]');
+            const signupBtn = document.querySelector('a[data-bs-target="#signupModal"]');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const mypageBtn = document.getElementById('mypageBtn');
+
+            if (user) {
+                // 로그인 상태
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (signupBtn) signupBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            } else {
+                // 로그아웃 상태
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (signupBtn) signupBtn.style.display = 'block';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+                if (mypageBtn) mypageBtn.remove();
+            }
+        });
+
+        // 모달 닫기 함수 개선
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            
+            // 모달 내부 폼 초기화
+            const form = modal.querySelector('form');
+            if (form) {
+                form.reset();
+            }
+
+            // 포커스 제거
+            const focusedElement = document.activeElement;
+            if (focusedElement) {
+                focusedElement.blur();
+            }
+
+            // 모달 닫기
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+
+        // 로그인 폼 제출 처리
+        document.querySelector('#loginModal form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            try {
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                closeModal('loginModal');
+                window.location.reload();
+            } catch (error) {
+                alert('로그인 실패: ' + error.message);
+            }
+        });
+
+        // 회원가입 폼 제출 처리 개선
+        document.querySelector('#signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
+
+            if (password !== confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            try {
+                // 회원가입 처리
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                
+                // 회원가입 성공 시 추가 정보 저장 (선택사항)
+                await firebase.auth().currentUser.updateProfile({
+                    displayName: email.split('@')[0] // 이메일의 @ 앞부분을 기본 닉네임으로 설정
+                });
+
+                // 모달 닫기
+                closeModal('signupModal');
+                
+                // 성공 메시지 표시
+                alert('회원가입이 완료되었습니다. 로그인해주세요.');
+                
+                // 로그인 모달 표시
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+            } catch (error) {
+                console.error('회원가입 실패:', error);
+                let errorMessage = '회원가입에 실패했습니다.';
+                
+                // Firebase 에러 메시지 한글화
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = '이미 사용 중인 이메일입니다.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = '유효하지 않은 이메일 형식입니다.';
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage = '이메일/비밀번호 로그인이 비활성화되어 있습니다.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = '비밀번호가 너무 약합니다. 6자 이상 입력해주세요.';
+                        break;
+                }
+                alert(errorMessage);
+            }
+        });
+
+        // 구글 로그인 처리
+        document.querySelector('#loginModal .btn-google').addEventListener('click', function() {
+            closeModal('loginModal');
+            setTimeout(() => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider);
+            }, 300);
+        });
+
+        // 구글 회원가입 처리
+        document.querySelector('#signupModal .btn-google').addEventListener('click', function() {
+            closeModal('signupModal');
+            setTimeout(() => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider);
+            }, 300);
+        });
+
+        // 로그아웃 처리
+        document.querySelector('#logoutBtn').addEventListener('click', async function() {
+            try {
+                await firebase.auth().signOut();
+            } catch (error) {
+                console.error('로그아웃 실패:', error);
+                alert('로그아웃에 실패했습니다: ' + error.message);
+            }
+        });
+    </script>
+    <script>
+    function toggleDetail(idx) {
+        // 모든 상세를 닫음
+        document.querySelectorAll('.notice-detail').forEach(function(el) {
+            if (el.id !== 'detail-' + idx) {
+            el.classList.remove('open');
+            }
+        });
+        // 해당 상세만 토글
+        var detail = document.getElementById('detail-' + idx);
+        if (detail) {
+            detail.classList.toggle('open');
+        }
+    }
+    function openLoginModal() {
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+    }
+    // 상세페이지 접근 제어
+    function setDetailAuthUI(isLoggedIn) {
+        document.querySelectorAll('.notice-detail').forEach(function(detail) {
+            const msg = detail.querySelector('.login-required-message');
+            const content = detail.querySelector('.notice-detail-content');
+            if (isLoggedIn) {
+                if (msg) msg.style.display = 'none';
+                if (content) content.style.display = '';
+            } else {
+                if (msg) msg.style.display = '';
+                if (content) content.style.display = 'none';
+            }
+        });
+    }
+    </script>
+</body>
+</html>

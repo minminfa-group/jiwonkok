@@ -1,0 +1,69 @@
+{% extends '../base.html' %}
+
+{% block title %}수익 관리 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">수익 관리</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">총 수익</h5>
+                <h2 class="card-text">₩1,000,000</h2>
+                <p class="text-muted">이번 달</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">신규 구독</h5>
+                <h2 class="card-text">50</h2>
+                <p class="text-muted">이번 달</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">평균 구독료</h5>
+                <h2 class="card-text">₩20,000</h2>
+                <p class="text-muted">이번 달</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">수익 내역</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>날짜</th>
+                                <th>구독자</th>
+                                <th>금액</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-03-21</td>
+                                <td>홍길동</td>
+                                <td>₩20,000</td>
+                                <td><span class="badge bg-success">완료</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

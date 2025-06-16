@@ -1,0 +1,46 @@
+{% extends '../base.html' %}
+
+{% block title %}콘텐츠 관리 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">콘텐츠 관리</h1>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">콘텐츠 목록</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>작성일</th>
+                                <th>상태</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>샘플 콘텐츠</td>
+                                <td>관리자</td>
+                                <td>2024-03-21</td>
+                                <td><span class="badge bg-success">활성</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">수정</button>
+                                    <button class="btn btn-sm btn-danger">삭제</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

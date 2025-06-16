@@ -1,0 +1,588 @@
+{% extends 'base.html' %}
+
+{% block title %}마케팅 관리 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">마케팅 관리</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 수익 현황 -->
+                    <div class="mb-4">
+                        <h6>수익 현황</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body">
+                                        <h6 class="card-title">오늘의 수익</h6>
+                                        <h3 class="card-text">₩0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body">
+                                        <h6 class="card-title">이번 주 수익</h6>
+                                        <h3 class="card-text">₩0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body">
+                                        <h6 class="card-title">이번 달 수익</h6>
+                                        <h3 class="card-text">₩0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body">
+                                        <h6 class="card-title">총 수익</h6>
+                                        <h3 class="card-text">₩0</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 성과 분석 -->
+                    <div class="mb-4">
+                        <h6>성과 분석</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">클릭률 (CTR)</h6>
+                                        <canvas id="ctrChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">수익 추이</h6>
+                                        <canvas id="revenueChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 활성 캠페인 -->
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6>활성 캠페인</h6>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCampaignModal">
+                                <i class="bi bi-plus"></i> 새 캠페인
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>캠페인명</th>
+                                        <th>광고위치</th>
+                                        <th>시작일</th>
+                                        <th>종료일</th>
+                                        <th>상태</th>
+                                        <th>이동URL</th>
+                                        <th>이미지</th>
+                                        <th>관리</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 데이터는 JavaScript로 동적 로드 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 새 캠페인 모달 -->
+<div class="modal fade" id="newCampaignModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">새 광고 캠페인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="campaignForm" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="campaignName" class="form-label">캠페인명</label>
+                                <input type="text" class="form-control" id="campaignName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adType" class="form-label">광고 유형</label>
+                                <select class="form-select" id="adType" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="banner">배너 광고</option>
+                                    <option value="interstitial">전면 광고</option>
+                                    <option value="rewarded">보상형 광고</option>
+                                    <option value="native">네이티브 광고</option>
+                                    <option value="appOpen">앱 오픈 광고</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">시작일</label>
+                                <input type="date" class="form-control" id="startDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">종료일</label>
+                                <input type="date" class="form-control" id="endDate" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="adUrl" class="form-label">광고 이동 URL</label>
+                                <input type="url" class="form-control" id="adUrl" placeholder="https://" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adImage" class="form-label">광고 이미지</label>
+                                <input type="file" class="form-control" id="adImage" accept="image/*" required>
+                                <div class="form-text">권장 크기: 1200x628px (최대 2MB)</div>
+                                <div id="imagePreview" class="mt-2" style="display: none;">
+                                    <img src="" alt="광고 이미지 미리보기" class="img-thumbnail" style="max-height: 200px;">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isActive" checked>
+                                    <label class="form-check-label" for="isActive">활성화</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="saveCampaign">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 수정 모달 -->
+<div class="modal fade" id="editCampaignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">캠페인 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCampaignForm">
+                    <input type="hidden" id="editCampaignId">
+                    <div class="mb-3">
+                        <label class="form-label">캠페인명</label>
+                        <input type="text" class="form-control" id="editCampaignName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">광고위치</label>
+                        <select class="form-select" id="editAdType" required>
+                            <option value="배너 광고">배너 광고</option>
+                            <option value="팝업 광고">팝업 광고</option>
+                            <option value="전면 광고">전면 광고</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">시작일</label>
+                        <input type="date" class="form-control" id="editStartDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">종료일</label>
+                        <input type="date" class="form-control" id="editEndDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">이동 URL</label>
+                        <input type="url" class="form-control" id="editAdUrl" required>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="editIsActive">
+                            <label class="form-check-label">활성화</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">광고 이미지</label>
+                        <input type="file" class="form-control" id="editAdImage" accept="image/*">
+                        <div id="editImagePreview" class="mt-2" style="display: none;">
+                            <img src="" alt="미리보기" style="max-width: 200px;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="updateCampaign">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+<script>
+    // Firebase 설정
+    const firebaseConfig = {
+        apiKey: "AIzaSyAv_rzTfkn_Aymck6faCy7rEsDh8uh0vfo",
+        authDomain: "jiwonq-68dbb.firebaseapp.com",
+        databaseURL: "https://jiwonq-68dbb-default-rtdb.firebaseio.com",
+        projectId: "jiwonq-68dbb",
+        storageBucket: "jiwonq-68dbb.firebasestorage.app",
+        messagingSenderId: "148645860928",
+        appId: "1:148645860928:web:4cb35ee1f4db4ff176b1a5"
+    };
+
+    // Firebase 초기화
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // 이미지 미리보기
+    document.getElementById('adImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                preview.style.display = 'block';
+                preview.querySelector('img').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 이미지 업로드 함수
+    async function uploadImage(file) {
+        try {
+            // 파일 확장자 추출
+            const fileExt = file.name.split('.').pop();
+            // 원본 파일명에서 확장자 제외
+            const fileName = file.name.substring(0, file.name.lastIndexOf('.'));
+            
+            // Storage 참조 생성
+            const storageRef = storage.ref();
+            const adsRef = storageRef.child(`ads/${fileName}.${fileExt}`);
+            
+            try {
+                // 파일 업로드
+                const uploadTask = await adsRef.put(file);
+                
+                // 업로드된 파일의 URL 가져오기
+                const downloadURL = await uploadTask.ref.getDownloadURL();
+                console.log('이미지 업로드 성공:', downloadURL);
+                
+                return downloadURL;
+            } catch (error) {
+                if (error.code === 'storage/unauthorized') {
+                    // 파일명 충돌 시 사용자에게 알림
+                    const newFileName = `${fileName}_${new Date().getTime()}.${fileExt}`;
+                    const newAdsRef = storageRef.child(`ads/${newFileName}`);
+                    
+                    const uploadTask = await newAdsRef.put(file);
+                    const downloadURL = await uploadTask.ref.getDownloadURL();
+                    console.log('이미지 업로드 성공 (파일명 변경):', downloadURL);
+                    
+                    return downloadURL;
+                }
+                throw error;
+            }
+        } catch (error) {
+            console.error('이미지 업로드 중 오류:', error);
+            throw error;
+        }
+    }
+
+    // 새 캠페인 저장
+    document.getElementById('saveCampaign').addEventListener('click', async function() {
+        const form = document.getElementById('campaignForm');
+        
+        try {
+            // 이미지 파일 가져오기
+            const imageFile = document.getElementById('adImage').files[0];
+            let imageUrl = '';
+            
+            // 이미지가 있는 경우에만 업로드
+            if (imageFile) {
+                console.log('이미지 업로드 시작:', imageFile.name);
+                imageUrl = await uploadImage(imageFile);
+                console.log('이미지 URL:', imageUrl);
+            }
+
+            // 캠페인 데이터 준비
+            const campaignData = {
+                campaignName: document.getElementById('campaignName').value,
+                adLocation: document.getElementById('adType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                status: document.getElementById('isActive').checked ? 'active' : 'inactive',
+                redirectUrl: document.getElementById('adUrl').value,
+                imageUrl: imageUrl,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+
+            console.log('캠페인 데이터:', campaignData);
+
+            // Firestore에 캠페인 데이터 저장
+            const docRef = await db.collection('ad_campaigns').add(campaignData);
+            console.log('캠페인 저장 성공, 문서 ID:', docRef.id);
+            
+            // 모달 닫기
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newCampaignModal'));
+            modal.hide();
+            
+            // 폼 초기화
+            form.reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            
+            // 성공 메시지 표시
+            alert('캠페인이 성공적으로 저장되었습니다.');
+            
+            // 목록 새로고침
+            location.reload();
+        } catch (error) {
+            console.error('캠페인 저장 중 오류:', error);
+            alert('캠페인 저장 중 오류가 발생했습니다: ' + error.message);
+        }
+    });
+
+    // 광고 위치 설정 저장
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        checkbox.addEventListener('change', async function() {
+            const settings = {};
+            document.querySelectorAll('.form-check-input').forEach(cb => {
+                settings[cb.id] = cb.checked;
+            });
+            
+            try {
+                await db.collection('ad_settings').doc('current').set(settings);
+                console.log('광고 설정이 저장되었습니다.');
+            } catch (error) {
+                console.error('광고 설정 저장 중 오류:', error);
+            }
+        });
+    });
+
+    // 캠페인 상태 업데이트 함수
+    async function updateCampaignStatus() {
+        try {
+            const now = new Date();
+            const campaignsRef = db.collection('ad_campaigns');
+            const querySnapshot = await campaignsRef.get();
+
+            const batch = db.batch();
+            let hasUpdates = false;
+
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const endDate = new Date(data.endDate);
+                const isActive = data.status === 'active';
+
+                // 종료일이 지났고 현재 활성 상태인 경우
+                if (endDate < now && isActive) {
+                    batch.update(doc.ref, {
+                        status: 'inactive',
+                        updatedAt: now
+                    });
+                    hasUpdates = true;
+                }
+            });
+
+            if (hasUpdates) {
+                await batch.commit();
+                console.log('캠페인 상태가 업데이트되었습니다.');
+                // 목록 새로고침
+                location.reload();
+            }
+        } catch (error) {
+            console.error('캠페인 상태 업데이트 중 오류:', error);
+        }
+    }
+
+    // 페이지 로드 시 캠페인 목록 로드
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // 먼저 상태 업데이트
+            await updateCampaignStatus();
+
+            const querySnapshot = await db.collection('ad_campaigns')
+                .orderBy('createdAt', 'desc')
+                .get();
+            
+            const tbody = document.querySelector('table tbody');
+            if (querySnapshot.size > 0) {
+                tbody.innerHTML = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const endDate = new Date(data.endDate);
+                    const now = new Date();
+                    const isExpired = endDate < now;
+                    
+                    return `
+                        <tr>
+                            <td>${data.campaignName}</td>
+                            <td>${data.adLocation}</td>
+                            <td>${new Date(data.startDate).toLocaleDateString()}</td>
+                            <td>${new Date(data.endDate).toLocaleDateString()}</td>
+                            <td>
+                                <span class="badge ${data.status === 'active' && !isExpired ? 'bg-success' : 'bg-secondary'}">
+                                    ${data.status === 'active' && !isExpired ? '활성' : '비활성'}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="${data.redirectUrl}" target="_blank" class="btn btn-sm btn-link">
+                                    ${data.redirectUrl}
+                                </a>
+                            </td>
+                            <td>
+                                <img src="${data.imageUrl}" alt="${data.campaignName}" 
+                                     style="max-width: 100px; max-height: 50px; object-fit: contain;">
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="editCampaign('${doc.id}')">수정</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteCampaign('${doc.id}')">삭제</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center">등록된 캠페인이 없습니다.</td>
+                    </tr>
+                `;
+            }
+        } catch (error) {
+            console.error('캠페인 목록 로드 중 오류:', error);
+            alert('캠페인 목록을 불러오는 중 오류가 발생했습니다.');
+        }
+    });
+
+    // 1시간마다 상태 업데이트
+    setInterval(updateCampaignStatus, 60 * 60 * 1000);
+
+    // 캠페인 수정 함수
+    async function editCampaign(campaignId) {
+        try {
+            const docRef = db.collection('ad_campaigns').doc(campaignId);
+            const doc = await docRef.get();
+            
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // 폼에 데이터 채우기
+                document.getElementById('editCampaignId').value = campaignId;
+                document.getElementById('editCampaignName').value = data.campaignName;
+                document.getElementById('editAdType').value = data.adLocation;
+                document.getElementById('editStartDate').value = data.startDate;
+                document.getElementById('editEndDate').value = data.endDate;
+                document.getElementById('editAdUrl').value = data.redirectUrl;
+                document.getElementById('editIsActive').checked = data.status === 'active';
+                
+                // 이미지 미리보기
+                if (data.imageUrl) {
+                    const preview = document.getElementById('editImagePreview');
+                    preview.style.display = 'block';
+                    preview.querySelector('img').src = data.imageUrl;
+                }
+                
+                // 모달 표시
+                const modal = new bootstrap.Modal(document.getElementById('editCampaignModal'));
+                modal.show();
+            }
+        } catch (error) {
+            console.error('캠페인 수정 중 오류:', error);
+            alert('캠페인 정보를 불러오는 중 오류가 발생했습니다.');
+        }
+    }
+
+    // 캠페인 삭제 함수
+    async function deleteCampaign(campaignId) {
+        if (confirm('정말로 이 캠페인을 삭제하시겠습니까?')) {
+            try {
+                await db.collection('ad_campaigns').doc(campaignId).delete();
+                alert('캠페인이 삭제되었습니다.');
+                location.reload();
+            } catch (error) {
+                console.error('캠페인 삭제 중 오류:', error);
+                alert('캠페인 삭제 중 오류가 발생했습니다.');
+            }
+        }
+    }
+
+    // 수정된 이미지 미리보기
+    document.getElementById('editAdImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('editImagePreview');
+                preview.style.display = 'block';
+                preview.querySelector('img').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 캠페인 업데이트
+    document.getElementById('updateCampaign').addEventListener('click', async function() {
+        const campaignId = document.getElementById('editCampaignId').value;
+        const form = document.getElementById('editCampaignForm');
+        
+        try {
+            const imageFile = document.getElementById('editAdImage').files[0];
+            let imageUrl = '';
+            
+            // 새 이미지가 있는 경우에만 업로드
+            if (imageFile) {
+                imageUrl = await uploadImage(imageFile);
+            }
+
+            const updateData = {
+                campaignName: document.getElementById('editCampaignName').value,
+                adLocation: document.getElementById('editAdType').value,
+                startDate: document.getElementById('editStartDate').value,
+                endDate: document.getElementById('editEndDate').value,
+                redirectUrl: document.getElementById('editAdUrl').value,
+                status: document.getElementById('editIsActive').checked ? 'active' : 'inactive',
+                updatedAt: new Date()
+            };
+
+            // 새 이미지가 있는 경우에만 imageUrl 업데이트
+            if (imageUrl) {
+                updateData.imageUrl = imageUrl;
+            }
+
+            await db.collection('ad_campaigns').doc(campaignId).update(updateData);
+            
+            // 모달 닫기
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editCampaignModal'));
+            modal.hide();
+            
+            alert('캠페인이 수정되었습니다.');
+            location.reload();
+        } catch (error) {
+            console.error('캠페인 수정 중 오류:', error);
+            alert('캠페인 수정 중 오류가 발생했습니다: ' + error.message);
+        }
+    });
+</script>
+{% endblock %} 

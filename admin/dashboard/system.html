@@ -1,0 +1,83 @@
+{% extends '../base.html' %}
+
+{% block title %}시스템 관리 - JiwonKoK Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">시스템 관리</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">시스템 상태</h5>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">CPU 사용량</h6>
+                            <small class="text-success">정상</small>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar" role="progressbar" style="width: 25%">25%</div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">메모리 사용량</h6>
+                            <small class="text-success">정상</small>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar" role="progressbar" style="width: 40%">40%</div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">디스크 사용량</h6>
+                            <small class="text-warning">주의</small>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 75%">75%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">시스템 로그</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>이벤트</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-03-21 10:00</td>
+                                <td>시스템 시작</td>
+                                <td><span class="badge bg-success">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-21 09:55</td>
+                                <td>데이터베이스 백업</td>
+                                <td><span class="badge bg-success">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-21 09:50</td>
+                                <td>시스템 업데이트</td>
+                                <td><span class="badge bg-warning">경고</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
