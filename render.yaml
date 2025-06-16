@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: jiwonkok-admin
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: FIREBASE_CONFIG_JSON
+        fromFile: firebase-credentials.json
+
+databases:
+  - name: jiwonkok-db
+    databaseName: jiwonkok
+    user: jiwonkok 
