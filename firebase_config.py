@@ -12,9 +12,14 @@ try:
     # 환경 변수에서 Firebase credentials 가져오기
     firebase_credentials = os.getenv('FIREBASE_CREDENTIALS')
     if firebase_credentials:
-        # JSON 문자열을 파싱
-        cred_dict = json.loads(firebase_credentials)
-        cred = credentials.Certificate(cred_dict)
+        try:
+            # JSON 문자열을 파싱
+            cred_dict = json.loads(firebase_credentials)
+            cred = credentials.Certificate(cred_dict)
+        except json.JSONDecodeError as e:
+            logger.error(f"Firebase credentials JSON 파싱 실패: {str(e)}")
+            # 파일에서 로드 시도
+            cred = credentials.Certificate('firebase-credentials.json')
     else:
         # 로컬 개발 환경에서는 파일에서 로드
         cred = credentials.Certificate('firebase-credentials.json')

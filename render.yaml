@@ -11,7 +11,7 @@ services:
         value: False
       - key: ALLOWED_HOSTS
         value: .onrender.com
-      - key: FIREBASE_CONFIG_JSON
+      - key: FIREBASE_CREDENTIALS
         fromFile: firebase-credentials.json
 
 databases:
