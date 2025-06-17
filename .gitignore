@@ -42,3 +42,8 @@
    # OS
    .DS_Store
    Thumbs.db
+
+   # Google Cloud
+   *.json
+   credentials/
+   service-account/
