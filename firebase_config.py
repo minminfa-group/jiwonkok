@@ -2,12 +2,23 @@ import firebase_admin
 from firebase_admin import credentials, db
 import logging
 from datetime import datetime
+import os
+import json
 
 logger = logging.getLogger(__name__)
 
 # Firebase 초기화
 try:
-    cred = credentials.Certificate('firebase-credentials.json')
+    # 환경 변수에서 Firebase credentials 가져오기
+    firebase_credentials = os.getenv('FIREBASE_CREDENTIALS')
+    if firebase_credentials:
+        # JSON 문자열을 파싱
+        cred_dict = json.loads(firebase_credentials)
+        cred = credentials.Certificate(cred_dict)
+    else:
+        # 로컬 개발 환경에서는 파일에서 로드
+        cred = credentials.Certificate('firebase-credentials.json')
+    
     firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://jiwonq-68dbb-default-rtdb.firebaseio.com'
     })
@@ -36,19 +47,16 @@ def get_announcements():
         
         announcements = ref.get()
         logger.info(f"Firebase에서 가져온 원본 데이터 타입: {type(announcements)}")
-        # logger.info(f"Firebase에서 가져온 원본 데이터: {announcements}")
         
         if announcements:
             # 딕셔너리를 리스트로 변환
             announcements_list = [value for value in announcements.values()]
-            # logger.info(f"리스트로 변환된 데이터: {announcements_list}")
             
             # robust 정렬
             announcements_list.sort(
                 key=lambda x: parse_date(str(x.get('공고일', ''))),
                 reverse=True
             )
-            # logger.info(f"정렬된 데이터: {announcements_list}")
             
             return announcements_list
         else:
