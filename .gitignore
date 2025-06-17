@@ -47,3 +47,8 @@
    *.json
    credentials/
    service-account/
+
+   # Firebase
+   firebase-credentials.json
+   *-credentials.json
+   credentials/
